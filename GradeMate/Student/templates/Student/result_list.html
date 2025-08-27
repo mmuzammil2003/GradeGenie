@@ -1,55 +1,54 @@
 {% extends 'Student/base.html' %}
 {% load static %}
 
-{% block title %}My Results{% endblock %}
+{% block title %}Result for {{ result.assignment.title }}{% endblock %}
 
 {% block content %}
     <div class="max-w-4xl mx-auto">
-        <!-- Back to Dashboard Link -->
+        <!-- Back to Results List Link -->
         <div class="mb-6">
-            <a href="{% url 'student_dashboard' %}" class="text-blue-400 hover:text-blue-300 hover:underline transition-colors">
-                &larr; Back to Dashboard
+            <a href="{% url 'result' %}" class="text-blue-400 hover:text-blue-300 hover:underline transition-colors">
+                &larr; Back to All Results
             </a>
         </div>
 
-        <!-- Main Results Card -->
+        <!-- Main Result Detail Card -->
         <div class="card p-6 sm:p-8">
-            <h2 class="text-3xl font-bold text-white mb-6 border-b border-gray-700 pb-4">My Results</h2>
-            
-            <div class="space-y-3">
-                {% for result in results_list %}
-                <!-- Each result is a clickable link to its detail page -->
-                <a href="{% url 'result_detail' result.id %}" class="block bg-gray-900/50 p-4 rounded-md border border-transparent hover:border-blue-500 transition-colors">
-                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center">
-                        <!-- Assignment Info -->
-                        <div class="mb-2 sm:mb-0">
-                            <h4 class="font-bold text-white">{{ result.assignment.title }}</h4>
-                            <p class="text-sm text-gray-400">Subject: {{ result.assignment.subject }} | Submitted: {{ result.submission_date|date:"M d, Y" }}</p>
-                        </div>
-                        
-                        <!-- Score Info -->
-                        <div class="text-left sm:text-right">
-                            <p class="text-2xl font-bold {% if result.score >= 90 %}text-green-400{% elif result.score >= 80 %}text-blue-400{% else %}text-yellow-400{% endif %}">
-                                {{ result.score }} / {{ result.assignment.max_score }}
-                            </p>
-                            <p class="text-sm {% if result.score >= 90 %}text-green-400{% elif result.score >= 80 %}text-blue-400{% else %}text-yellow-400{% endif %}">
-                                {% if result.score >= 90 %}Excellent{% elif result.score >= 80 %}Good{% elif result.score >= 70 %}Fair{% else %}Needs Improvement{% endif %}
-                            </p>
-                        </div>
-                    </div>
-                </a>
-                {% empty %}
-                <!-- Message shown if there are no results -->
-                <div class="text-center py-12 text-gray-400">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-12 w-12 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                    <h3 class="mt-2 text-lg font-medium text-white">No Results Yet</h3>
-                    <p class="mt-1 text-sm text-gray-500">
-                      Once your assignments are graded, they will appear here.
+            <!-- Header: Title and Score -->
+            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start border-b border-gray-700 pb-4 mb-6">
+                <div>
+                    <h2 class="text-3xl font-bold text-white">{{ result.assignment.title }}</h2>
+                    <p class="text-sm text-gray-400">
+                        Subject: {{ result.assignment.subject }} | Submitted: {{ result.submission_date|date:"M d, Y" }}
                     </p>
                 </div>
-                {% endfor %}
+                <div class="text-right">
+                    <p class="text-2xl font-bold 
+                        {% if result.score >= 90 %}text-green-400
+                        {% elif result.score >= 80 %}text-blue-400
+                        {% elif result.score >= 70 %}text-yellow-400
+                        {% else %}text-red-400{% endif %}">
+                        {{ result.score }} / {{ result.assignment.max_score }}
+                    </p>
+                    <p class="text-sm 
+                        {% if result.score >= 90 %}text-green-400
+                        {% elif result.score >= 80 %}text-blue-400
+                        {% elif result.score >= 70 %}text-yellow-400
+                        {% else %}text-red-400{% endif %}">
+                        {% if result.score >= 90 %}Excellent
+                        {% elif result.score >= 80 %}Good
+                        {% elif result.score >= 70 %}Fair
+                        {% else %}Needs Improvement{% endif %}
+                    </p>
+                </div>
+            </div>
+
+            <!-- Feedback / Teacher's Comments -->
+            <div>
+                <h3 class="text-xl font-semibold text-white mb-2">Feedback</h3>
+                <p class="text-gray-300">
+                    {{ result.feedback|default:"No feedback provided." }}
+                </p>
             </div>
         </div>
     </div>
